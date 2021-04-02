@@ -1,0 +1,59 @@
+ITSC@DESKTOP-JEQ51QB MINGW64 ~
+$ git config --global user.name 'koreaitlecture'
+
+ITSC@DESKTOP-JEQ51QB MINGW64 ~
+$ git config --global user.email 'min-k-t@hanmail.net'
+
+ITSC@DESKTOP-JEQ51QB MINGW64 ~
+$ git config --global user.name
+koreaitlecture
+
+ITSC@DESKTOP-JEQ51QB MINGW64 ~
+$ git config --global user.email
+min-k-t@hanmail.net
+
+ITSC@DESKTOP-JEQ51QB MINGW64 ~
+$ cd d:/spring0303/dbstudy2
+
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2
+$ git init
+Initialized empty Git repository in D:/spring0303/dbstudy2/.git/
+
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2 (main)
+$ git add .
+
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2 (main)
+$ git commit -m 'update 2021-04-02'
+
+github.com 방문하여 레파지토리 생성
+
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2 (main)
+$ git remote add origin https://github.com/koreaitlecture/dbstudy2.git
+
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2 (main)
+$ git pull origin main --allow-unrelated-histories
+
+VIM으로 입성
+
+:wq 입력 후 엔터 누르면 빠져 나옴
+
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2 (main)
+$ git push origin main
+
+
+------- 최초 올리기/내리기가 종료되었으므로 이제 add, commit, push만 하면 된다.
+
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2 (main)
+$ git add .
+
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2 (main)
+$ git commit -m 'update 2021-04-02'
+
+
+add + commit  (최초 1회는 add, commit 을 따로 해야 한다.)
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2 (main)
+$ git commit -am 'update 2021-04-02'
+
+
+ITSC@DESKTOP-JEQ51QB MINGW64 /d/spring0303/dbstudy2 (main)
+$ git push origin main
