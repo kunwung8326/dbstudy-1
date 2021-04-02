@@ -23,13 +23,3 @@ ALTER TABLE customer ADD CONSTRAINT customer_pk PRIMARY KEY(no);
 ALTER TABLE customer ADD CONSTRAINT customer_phone_uq UNIQUE(phone);
 ALTER TABLE customer ADD CONSTRAINT customer_age_ck CHECK(age BETWEEN 0 AND 100);
 ALTER TABLE customer ADD CONSTRAINT customer_bank_fk FOREIGN KEY(bank_code) REFERENCES bank(bank_code);
-
-
-
-
-
-
-
-
-
-
