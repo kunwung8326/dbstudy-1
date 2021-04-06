@@ -37,3 +37,42 @@ INSERT INTO employee(emp_no, name, depart, position, gender, hire_date, salary) 
 INSERT INTO employee(emp_no, name, depart, position, gender, hire_date, salary) VALUES (1004, '한성일', 2, '과장', 'M', '93-04-01', 5000000);
 
 COMMIT;
+
+
+-- 카테젼 곱
+-- 두 테이블의 조인 조건(관계)이 잘못되거나 없을 때 나타난다.
+SELECT
+       e.emp_no
+     , e.name
+     , d.dept_name
+     , e.position
+     , e.hire_date
+     , e.salary
+  FROM employee e, department d;
+
+SELECT
+       e.emp_no
+     , e.name
+     , d.dept_name
+     , e.position
+     , e.hire_date
+     , e.salary
+  FROM employee e 
+ CROSS JOIN department d;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
