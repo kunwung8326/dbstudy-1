@@ -13,9 +13,9 @@ SELECT A, B, C
   FROM TABLE;
 
 SELECT /* 무슨무슨 테이블 */
-        A  -- xx
-      , B  -- xx
-      , C  -- xx
+       A  -- xx
+     , B  -- xx
+     , C  -- xx
   FROM table
  WHERE A = 'xx'
  GROUP BY A
@@ -32,8 +32,8 @@ SELECT
 
 -- 27. 최대연봉(salary)과 최소연봉의 차이를 조회한다.
 SELECT
-        MAX(salary) AS 최대연봉
-      , MIN(salary) AS 최소연봉
+       MAX(salary) AS 최대연봉
+     , MIN(salary) AS 최소연봉
   FROM employees;
 
 
@@ -72,34 +72,111 @@ SELECT
 -- << departments 테이블 >>
 
 -- 31. 같은 지역(location_id) 끼리 모아서 조회한다.
+SELECT DISTINCT location_id
+  FROM departments;
+
+SELECT location_id  -- SELECT절에서 location_id를 사용하려면,
+  FROM departments
+ GROUP BY location_id;  -- 반드시 GROUP BY절에서 location_id를 사용해야 한다.
 
 
 -- 32. 같은 지역(location_id) 끼리 모아서 각 지역(location_id) 마다 총 몇 개의 부서가 있는지 개수를 함께 조회한다.
+SELECT
+       location_id
+     , COUNT(*) AS 부서수
+  FROM departments
+ GROUP BY location_id;
 
 
 -- 33. 같은 지역(location_id) 끼리 모아서 해당 지역(location_id) 에 어떤 부서(department_name) 가 있는지 조회한다.
-
+SELECT
+       location_id
+     , department_id
+  FROM departments
+ GROUP BY location_id, department_id;  -- 억지로 실행을 만든 쿼리. 사실 문제 자체가 그룹핑이 불가한 상황.
 
 
 -- << employees 테이블 >>
 
 -- 34. 각 부서(department_id)별로 그룹화하여 department_id 와 부서별 사원의 수를 출력한다.
+SELECT
+       department_id
+     , COUNT(*) AS 사원수
+  FROM employees
+ GROUP BY department_id;
 
 
 -- 35. 부서(department_id)별로 집계하여 department_id 와 급여평균을 department_id 순으로 오름차순 정렬해서 출력한다.
+SELECT
+       department_id
+     , AVG(salary) AS 급여평균
+  FROM employees
+ GROUP BY department_id
+ ORDER BY department_id;
 
 
 -- 36. 동일한 직업(job_id)을 가진 사원들의 job_id 와 인원수와 급여평균을 급여평균의 오름차순 정렬하여 출력한다.
 
+-- FROM -> GROUP BY -> SELECT -> ORDER BY 순으로 처리되기 때문에
+-- SELECT에서 지정한 별명을 ORDER BY는 사용할 수 있지만,
+-- SELECT에서 지정한 별명을 GROUP BY는 사용할 수 없다.
+
+-- 가능한 쿼리
+SELECT
+       job_id
+     , COUNT(*) AS 인원수
+     , AVG(salary) AS 급여평균
+  FROM employees
+ GROUP BY job_id
+ ORDER BY AVG(salary);  -- 또는 AVG(salary)의 별명을 사용한다.   ORDER BY 별명; -> ORDER BY 급여평균;
+
+-- 불가능한 쿼리
+SELECT
+       job_id AS 직업
+     , COUNT(*) AS 인원수
+     , AVG(salary) AS 급여평균
+  FROM employees
+ GROUP BY 직업;
+
 
 -- 37. 직업(job_id)이 SH_CLERK 인 직원들의 인원수와 최대급여 및 최소급여를 출력한다.
+SELECT
+       job_id
+     , COUNT(*) AS 직원수
+     , MAX(salary) AS 최대급여
+     , MIN(salary) AS 최소급여
+  FROM employees
+ WHERE job_id = 'SH_CLERK'
+ GROUP BY job_id;
 
 
 -- 38. 근무 중인 사원수가 5명 이상인 부서의 department_id 와 해당 부서의 사원수를 department_id 의 오름차순으로 정렬하여 출력한다.
+-- 근무 중인 사원수는 GROUP BY 이후에 알 수 있기 때문에
+-- HAVING절로 처리한다.
+
+SELECT
+       department_id
+     , COUNT(*) AS 사원수
+  FROM employees
+ GROUP BY department_id
+HAVING COUNT(*) >= 5;
 
 
 -- 39. 평균급여가 10000 이상인 부서의 department_id 와 급여평균을 출력한다.
+SELECT
+       department_id
+     , AVG(salary) AS 평균급여
+  FROM employees
+ GROUP BY department_id
+HAVING AVG(salary) >= 10000;  -- HAVING 평균급여 >= 10000; 는 불가능하다.
 
 
 -- 40. 부서(department_id)마다 같은 직업(job_id)을 가진 사원수를 department_id 순으로 정렬하여 출력한다.
 -- 단, department_id 가 없는 사원은 출력하지 않는다.
+SELECT
+       department_id
+     , COUNT(*) AS 사원수
+  FROM employees
+ WHERE department_id IS NOT NULL
+ GROUP BY department_id
+ ORDER BY department_id;
