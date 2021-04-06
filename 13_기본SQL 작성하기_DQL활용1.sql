@@ -236,14 +236,36 @@ SELECT DISTINCT department_id
 
 -- 22. 커미션(commission_pct)을 받는 사원들의 실제 커미션(commission = salary * commission_pct)을 구하고,
 -- employee_id, first_name, job_id 와 함께 조회한다.
+SELECT employee_id, first_name, job_id, salary * commission_pct AS commission
+  FROM employees
+ WHERE commission_pct IS NOT NULL;
+ 
 
+/*
+    오름차순/내림차순 정렬
+    1. 오름차순 : ORDER BY 칼럼 ASC   -- Ascending
+                  ORDER BY 칼럼
+    2. 내림차순 : ORDER BY 칼럼 DESC  -- Descending
+*/
 
 -- 23. 가장 오래 전에 입사(hire_date)한 직원부터 최근에 입사한 직원 순으로 last_name, hire_date 를 조회한다.
+-- 날짜는 오래된 날짜가 작은 값이고, 최근 날짜가 큰 값이다.
+SELECT last_name, hire_date
+  FROM employees
+ ORDER BY hire_date;  -- ORDER BY hire_date ASC;
 
 
 -- 24. 부서번호(department_id)가 20, 50 인 부서에서 근무하는 모든 사원들의 부서번호의 오름차순으로 조회하되,
 -- 같은 부서번호 내에서는 last_name 의 알파벳순으로 조회한다.
+SELECT employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id 
+  FROM employees
+ WHERE department_id IN(20, 50)
+ ORDER BY department_id, last_name;
 
 
 -- 25. 커미션(commission_pct)을 받는 모든 사원들의 last_name, salary, commission_pct 을 조회한다.
 -- 연봉이 높은 사원을 먼저 조회하고 같은 연봉의 사원들은 커미션이 높은 사원을 먼저 조회한다.
+SELECT last_name, salary, commission_pct
+  FROM employees
+ WHERE commission_pct IS NOT NULL
+ ORDER BY salary DESC, commission_pct DESC;
