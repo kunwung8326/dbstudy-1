@@ -90,15 +90,101 @@ ALTER TABLE ORDERS ADD CONSTRAINT ORDERS_BOOK_FK FOREIGN KEY(BOOK_ID) REFERENCES
 ALTER TABLE ORDERS ADD CONSTRAINT ORDERS_CUSTOMER_FK FOREIGN KEY(CUSTOMER_ID) REFERENCES CUSTOMER(CUSTOMER_ID);
 
 -- 4. 2014년 7월 4일부터 7월 7일 사이에 주문 받은 도서를 제외하고 나머지 모든 주문 정보를 조회하시오.
+SELECT order_id
+     , book_id
+     , customer_id
+     , sales_price
+     , order_date
+  FROM orders
+ WHERE order_date NOT BETWEEN '14/07/04' AND '14/07/07';
 
--- 5. 박지성의 총 구매액(SALE_PRICE)을 조회하시오.
+SELECT o.order_id
+     , b.book_name
+     , c.customer_name
+     , o.sales_price
+     , o.order_date
+  FROM customer c, book b, orders o
+ WHERE c.customer_id = o.customer_id
+   AND b.book_id = o.book_id
+   AND order_date NOT BETWEEN '14/07/04' AND '14/07/07';
+
+
+-- 5. 박지성의 총 구매액(SALES_PRICE)을 조회하시오.
+-- 1) 조인
+SELECT c.customer_name
+     , SUM(o.sales_price) AS 총구매액
+  FROM customer c INNER JOIN orders o
+    ON c.customer_id = o.customer_id
+ WHERE c.customer_name = '박지성'  -- WHERE절이 없으면 전체 구매자 정보가 확인된다.
+ GROUP BY c.customer_name;
+
+-- 2) 서브쿼리
+-- 박지성의 구매내역만을 인라인 뷰(FROM절)로 가져와서 처리
+SELECT p.customer_name
+     , SUM(p.sales_price)
+  FROM (SELECT o.sales_price
+             , c.customer_name
+          FROM customer c, orders o
+         WHERE c.customer_id = o.customer_id
+           AND c.customer_name = '박지성') p
+ GROUP BY p.customer_name;
+
+-- 3) 서브쿼리
+-- 박지성의 구매내역의 합계를 스칼라 서브쿼리로 처리
+SELECT c.customer_name
+     , (SELECT SUM(o.sales_price)
+          FROM orders o
+         WHERE c.customer_id = o.customer_id) AS 총구매액
+  FROM customer c
+ WHERE c.customer_name = '박지성';
+
 
 -- 6. 박지성이 구매한 도서의 수를 조회하시오.
+SELECT c.customer_name
+     , COUNT(o.order_id) AS 총구매횟수
+  FROM customer c INNER JOIN orders o
+    ON c.customer_id = o.customer_id
+ WHERE c.customer_name = '박지성'  -- WHERE절이 없으면 전체 구매자 정보가 확인된다.
+ GROUP BY c.customer_name;
+
 
 -- 7. 박지성이 구매한 도서를 발간한 출판사(PUBLISHER)의 수를 조회하시오.
+SELECT c.customer_name
+     , COUNT(DISTINCT b.publisher) AS 출판사수
+  FROM customer c INNER JOIN orders o
+    ON c.customer_id = o.customer_id INNER JOIN book b
+    ON b.book_id = o.book_id
+ WHERE c.customer_name = '박지성'
+ GROUP BY c.customer_name;
 
--- 8. 고객별로 분류하여 각 고객의 이름과 각 고객별 총 구매액을 조회하시오.
+
+-- 8. 고객별로 분류하여 각 고객의 이름과 각 고객별 총 구매액을 조회하시오. 주문 이력이 없으면 0으로 조회하시오.
+SELECT c.customer_name
+     , NVL(SUM(o.sales_price), 0) AS 총구매액
+  FROM customer c LEFT OUTER JOIN orders o
+    ON c.customer_id = o.customer_id
+ GROUP BY c.customer_name;
+     
+SELECT c.customer_name
+     , NVL(SUM(o.sales_price), 0) AS 총구매액
+  FROM customer c, orders o
+ WHERE c.customer_id = o.customer_id(+)
+ GROUP BY c.customer_name;
+
 
 -- 9. 주문한 이력이 없는 고객의 이름을 조회하시오.
+-- SELECT FROM WHERE customer_id NOT IN(주문한 customer_id);
+SELECT
+       c.customer_name
+  FROM customer c
+ WHERE c.customer_id NOT IN(SELECT DISTINCT o.customer_id
+                              FROM orders o);
 
--- 10. 고객별로 총 구매횟수를 조회하시오.
+
+-- 10. 고객별로 총 구매횟수를 조회하시오. 주문 이력이 없으면 0으로 조회하시오.
+SELECT c.customer_id
+     , c.customer_name
+     , COUNT(o.order_id) AS 구매횟수
+  FROM customer c LEFT OUTER JOIN orders o
+    ON c.customer_id = o.customer_id
+ GROUP BY c.customer_id, c.customer_name;
