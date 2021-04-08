@@ -101,18 +101,119 @@ SELECT e.emp_no  -- 실행순서3
 -- 1. 다음 테이블을 생성한다.
 -- 게시판(글번호, 글제목, 글내용, 글작성자, 작성일자)
 -- 회원(회원번호, 아이디, 이름, 가입일자)
+DROP TABLE BOARD;
+DROP TABLE MEMBERS;
+
+CREATE TABLE BOARD
+(
+    BOARD_NO NUMBER,
+    BOARD_TITLE VARCHAR2(1000),
+    BOARD_CONTENT VARCHAR2(4000),
+    MEMBER_ID VARCHAR2(30),
+    BOARD_DATE DATE
+);
+
+CREATE TABLE MEMBERS
+(
+    MEMBER_NO NUMBER,
+    MEMBER_ID VARCHAR2(30) NOT NULL UNIQUE,
+    MEMBER_NAME VARCHAR2(30),
+    MEMBER_DATE DATE
+);
+
 
 -- 2. 각 테이블에서 사용할 시퀀스를 생성한다.
 -- 게시판시퀀스(1~무제한)
 -- 회원시퀀스(100000~999999)
+DROP SEQUENCE BOARD_SEQ;
+DROP SEQUENCE MEMBER_SEQ;
+CREATE SEQUENCE BOARD_SEQ INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE NOCACHE;
+CREATE SEQUENCE MEMBER_SEQ INCREMENT BY 1 START WITH 100000 MAXVALUE 999999 NOCYCLE NOCACHE;
 
 -- 3. 각 테이블에 적절한 기본키, 외래키, 데이터(5개)를 추가한다.
+ALTER TABLE MEMBER ADD CONSTRAINT MEMBERS_PK PRIMARY KEY(MEMBER_NO);
+ALTER TABLE BOARD ADD CONSTRAINT BOARD_PK PRIMARY KEY(BOARD_NO);
+ALTER TABLE BOARD ADD CONSTRAINT BOARD_MEMBER_FK FOREIGN KEY(MEMBER_ID) REFERENCES MEMBERS(MEMBER_ID);
+
+INSERT INTO MEMBERS(MEMBER_NO, MEMBER_ID, MEMBER_NAME, MEMBER_DATE) VALUES
+    (MEMBER_SEQ.NEXTVAL, 'admin', '관리자', '21/04/01');
+INSERT INTO MEMBERS(MEMBER_NO, MEMBER_ID, MEMBER_NAME, MEMBER_DATE) VALUES
+    (MEMBER_SEQ.NEXTVAL, 'tokyo', '도쿄', '21/04/02');
+INSERT INTO MEMBERS(MEMBER_NO, MEMBER_ID, MEMBER_NAME, MEMBER_DATE) VALUES
+    (MEMBER_SEQ.NEXTVAL, 'toronto', '토론토', '21/04/03');
+INSERT INTO MEMBERS(MEMBER_NO, MEMBER_ID, MEMBER_NAME, MEMBER_DATE) VALUES
+    (MEMBER_SEQ.NEXTVAL, 'tomato', '토마토', '21/04/04');
+INSERT INTO MEMBERS(MEMBER_NO, MEMBER_ID, MEMBER_NAME, MEMBER_DATE) VALUES
+    (MEMBER_SEQ.NEXTVAL, 'racer', '레이서', '21/04/05');
+INSERT INTO MEMBERS(MEMBER_NO, MEMBER_ID, MEMBER_NAME, MEMBER_DATE) VALUES
+    (MEMBER_SEQ.NEXTVAL, 'bayaba', '바야바', '21/04/06');
+
+INSERT INTO BOARD(BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEMBER_ID, BOARD_DATE) VALUES
+    (BOARD_SEQ.NEXTVAL, '공지사항', '공지입니다.', 'admin', SYSDATE);
+INSERT INTO BOARD(BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEMBER_ID, BOARD_DATE) VALUES
+    (BOARD_SEQ.NEXTVAL, '출석', '출석입니다.', 'bayaba', '21/04/05');
+INSERT INTO BOARD(BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEMBER_ID, BOARD_DATE) VALUES
+    (BOARD_SEQ.NEXTVAL, '질문입니다', '여기가 차붐의 나라입니까?', 'tomato', '21/04/06');
+INSERT INTO BOARD(BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEMBER_ID, BOARD_DATE) VALUES
+    (BOARD_SEQ.NEXTVAL, '협조', '재활용은 화목일입니다.', 'admin', SYSDATE);
+INSERT INTO BOARD(BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEMBER_ID, BOARD_DATE) VALUES
+    (BOARD_SEQ.NEXTVAL, '[필독]건의', '매일 아침마다 차가 너무 밀립니다.', 'racer', '21/04/07');
+
+COMMIT;
+
+SELECT * FROM BOARD;
+SELECT * FROM MEMBERS;
 
 -- 4. 게시판을 글제목의 가나다순으로 정렬하고 첫 번째 글을 조회한다.
+SELECT b.board_no
+     , b.board_title
+     , b.board_content
+     , b.member_id
+     , b.board_date
+  FROM (SELECT board_no
+             , board_title
+             , board_content
+             , member_id
+             , board_date
+          FROM board
+         ORDER BY board_title) b
+ WHERE ROWNUM = 1;
 
 -- 5. 게시판을 글번호의 가나다순으로 정렬하고 1 ~ 3번째 글을 조회한다.
+SELECT b.board_no
+     , b.board_title
+     , b.board_content
+     , b.member_id
+     , b.board_date
+  FROM (SELECT board_no
+             , board_title
+             , board_content
+             , member_id
+             , board_date
+          FROM board
+         ORDER BY board_no) b
+ WHERE ROWNUM <= 3;
 
 -- 6. 게시판을 최근 작성일자순으로 정렬하고 3 ~ 5번째 글을 조회한다.
+SELECT a.*
+  FROM (SELECT b.board_no
+             , b.board_title
+             , b.board_content
+             , b.member_id
+             , b.board_date
+             , ROWNUM AS rn
+          FROM (SELECT board_no
+                     , board_title
+                     , board_content
+                     , member_id
+                     , board_date
+                  FROM board
+                 ORDER BY board_date DESC) b) a
+ WHERE a.rn BETWEEN 3 AND 5;
+
+
+
+
 
 -- 7. 가장 먼저 가입한 회원을 조회한다.
 
