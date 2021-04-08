@@ -161,8 +161,6 @@ INSERT INTO BOARD(BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEMBER_ID, BOARD_DATE) V
 
 COMMIT;
 
-SELECT * FROM BOARD;
-SELECT * FROM MEMBERS;
 
 -- 4. 게시판을 글제목의 가나다순으로 정렬하고 첫 번째 글을 조회한다.
 SELECT b.board_no
@@ -179,6 +177,7 @@ SELECT b.board_no
          ORDER BY board_title) b
  WHERE ROWNUM = 1;
 
+
 -- 5. 게시판을 글번호의 가나다순으로 정렬하고 1 ~ 3번째 글을 조회한다.
 SELECT b.board_no
      , b.board_title
@@ -193,6 +192,7 @@ SELECT b.board_no
           FROM board
          ORDER BY board_no) b
  WHERE ROWNUM <= 3;
+
 
 -- 6. 게시판을 최근 작성일자순으로 정렬하고 3 ~ 5번째 글을 조회한다.
 SELECT a.*
@@ -212,11 +212,49 @@ SELECT a.*
  WHERE a.rn BETWEEN 3 AND 5;
 
 
-
-
-
 -- 7. 가장 먼저 가입한 회원을 조회한다.
+-- 가입일을 기준으로 오름차순 정렬하고 첫 번째 항목을 조회한다.
+SELECT m.member_no
+     , m.member_id
+     , m.member_name
+     , m.member_date
+  FROM (SELECT member_no
+             , member_id
+             , member_name
+             , member_date
+          FROM members
+         ORDER BY member_date) m
+ WHERE ROWNUM = 1;
+
 
 -- 8. 3번째로 가입한 회원을 조회한다.
+SELECT m2.member_no
+     , m2.member_id
+     , m2.member_name
+     , m2.member_date
+  FROM (SELECT m1.member_no
+             , m1.member_id
+             , m1.member_name
+             , m1.member_date
+             , ROWNUM AS rn
+          FROM (SELECT member_no
+                     , member_id
+                     , member_name
+                     , member_date
+                  FROM members
+                 ORDER BY member_date) m1) m2
+ WHERE m2.rn = 3;
+
 
 -- 9. 가장 나중에 가입한 회원을 조회한다.
+SELECT m.member_no
+     , m.member_id
+     , m.member_name
+     , m.member_date
+  FROM (SELECT member_no
+             , member_id
+             , member_name
+             , member_date
+          FROM members
+         ORDER BY member_date DESC) m
+ WHERE ROWNUM = 1;
