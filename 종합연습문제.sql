@@ -1,71 +1,71 @@
-DROP TABLE BUYS;
-DROP TABLE USERS;
+DROP TABLE buys;
+DROP TABLE users;
 
--- 사용자(USERS) 테이블 생성
-CREATE TABLE USERS (
-    USER_NO NUMBER,  -- 사용자번호
-    USER_ID VARCHAR2(20) NOT NULL UNIQUE,  -- 아이디
-    USER_NAME VARCHAR2(20),  -- 이름
-    USER_YEAR NUMBER(4),  -- 태어난년도
-    USER_ADDR VARCHAR2(100),  -- 주소
-    USER_MOBILE1 VARCHAR2(3),  -- 010, 011 등
-    USER_MOBILE2 VARCHAR2(8),  -- 12345678, 11111111 등
-    USER_REGDATE DATE  -- 가입일
+-- 사용자(users) 테이블 생성
+CREATE TABLE users (
+    user_no NUMBER,  -- 사용자번호
+    user_id VARCHAR2(20) NOT NULL UNIQUE,  -- 아이디
+    user_name VARCHAR2(20),  -- 이름
+    user_year NUMBER(4),  -- 태어난년도
+    user_addr VARCHAR2(100),  -- 주소
+    user_mobile1 VARCHAR2(3),  -- 010, 011 등
+    user_mobile2 VARCHAR2(8),  -- 12345678, 11111111 등
+    user_regdate DATE  -- 가입일
 );
 
--- 구매(BUYS) 테이블 생성
-CREATE TABLE BUYS (
-    BUY_NO NUMBER,  -- 구매번호
-    USER_ID VARCHAR2(20),  -- 구매자아이디
-    PROD_NAME VARCHAR2(20),  -- 제품명
-    PROD_CATEGORY VARCHAR2(20),  -- 제품카테고리
-    PROD_PRICE NUMBER,  -- 제품가격
-    BUY_AMOUNT NUMBER  -- 구매수량
+-- 구매(buys) 테이블 생성
+CREATE TABLE buys (
+    buy_no NUMBER,  -- 구매번호
+    user_id VARCHAR2(20),  -- 구매자아이디
+    prod_name VARCHAR2(20),  -- 제품명
+    prod_category VARCHAR2(20),  -- 제품카테고리
+    prod_price NUMBER,  -- 제품가격
+    buy_amount NUMBER  -- 구매수량
 );
 
 -- 1. 적절한 기본키와 외래키를 지정하시오.
-ALTER TABLE USERS ADD CONSTRAINT USERS_PK PRIMARY KEY(USER_NO);
-ALTER TABLE BUYS ADD CONSTRAINT BUYS_PK PRIMARY KEY(BUY_NO);
-ALTER TABLE BUYS ADD CONSTRAINT BUYS_USERS_FK FOREIGN KEY(USER_ID) REFERENCES USERS(USER_ID);
+ALTER TABLE users ADD CONSTRAINT users_pk PRIMARY KEY(user_no);
+ALTER TABLE buys ADD CONSTRAINT buys_pk PRIMARY KEY(buy_no);
+ALTER TABLE buys ADD CONSTRAINT buys_users_fk FOREIGN KEY(user_id) REFERENCES USERS(user_id);
 
 -- 2. 아래 INSERT문에서 사용되고 있는 사용자번호와 구매번호 대신 사용할 시퀀스를 생성하고 이를 INSERT문에 적용한 뒤 INSERT문을 실행하시오.
-CREATE SEQUENCE USERS_SEQ INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE NOCACHE;
-CREATE SEQUENCE BUYS_SEQ INCREMENT BY 1 START WITH 1001 NOMAXVALUE NOCYCLE NOCACHE;
+CREATE SEQUENCE users_seq INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE NOCACHE;
+CREATE SEQUENCE buys_seq INCREMENT BY 1 START WITH 1001 NOMAXVALUE NOCYCLE NOCACHE;
 
 -- USERS 테이블에 레코드(행, ROW) 삽입하기
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'YJS', '유재석', 1972, '서울', '010', '11111111', '08/08/08');
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'KHD', '강호동', 1970, '경북', '011', '22222222', '07/07/07');
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'KKJ', '김국진', 1965, '서울', '019', '33333333', '09/09/09');
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'KYM', '김용만', 1967, '서울', '010', '44444444', '15/05/05');
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'KJD', '김제동', 1974, '경남', NULL, NULL, '13/03/03');
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'NHS', '남희석', 1971, '충남', '016', '55555555', '14/04/04');
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'SDY', '신동엽', 1971, '경기', NULL, NULL, '08/10/10');
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'LHJ', '이휘재', 1972, '경기', '011', '66666666', '06/04/04');
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'LKK', '이경규', 1960, '경남', '018', '77777777', '04/12/12');
-INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL, 'PSH', '박수홍', 1970, '서울', '010', '88888888', '12/05/05');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'YJS', '유재석', 1972, '서울', '010', '11111111', '08/08/08');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'KHD', '강호동', 1970, '경북', '011', '22222222', '07/07/07');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'KKJ', '김국진', 1965, '서울', '019', '33333333', '09/09/09');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'KYM', '김용만', 1967, '서울', '010', '44444444', '15/05/05');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'KJD', '김제동', 1974, '경남', NULL, NULL, '13/03/03');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'NHS', '남희석', 1971, '충남', '016', '55555555', '14/04/04');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'SDY', '신동엽', 1971, '경기', NULL, NULL, '08/10/10');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'LHJ', '이휘재', 1972, '경기', '011', '66666666', '06/04/04');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'LKK', '이경규', 1960, '경남', '018', '77777777', '04/12/12');
+INSERT INTO users VALUES (users_seq.NEXTVAL, 'PSH', '박수홍', 1970, '서울', '010', '88888888', '12/05/05');
 
 -- BUYS 테이블에 레코드(행, ROW) 삽입하기
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'KHD', '운동화', '신발', 30, 2);
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'KHD', '노트북', '전자', 1000, 1);
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'KYM', '모니터', '전자', 200, 1);
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'PSH', '모니터', '전자', 200, 5);
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'KHD', '청바지', '의류', 50, 3);
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'PSH', '메모리', '전자', 80, 10);
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'KJD', '책', '의류', 15, 5);
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'LHJ', '책', '서적', 15, 2);
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'LHJ', '청바지', '의류', 50, 1);
-INSERT INTO BUYS VALUES (BUYS_SEQ.NEXTVAL, 'PSH', '운동화', '신발', 30, 2);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'KHD', '운동화', '신발', 30, 2);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'KHD', '노트북', '전자', 1000, 1);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'KYM', '모니터', '전자', 200, 1);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'PSH', '모니터', '전자', 200, 5);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'KHD', '청바지', '의류', 50, 3);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'PSH', '메모리', '전자', 80, 10);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'KJD', '책', '의류', 15, 5);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'LHJ', '책', '서적', 15, 2);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'LHJ', '청바지', '의류', 50, 1);
+INSERT INTO buys VALUES (buys_seq.NEXTVAL, 'PSH', '운동화', '신발', 30, 2);
 
 -- 3. 제품명이 '책'인데 제품카테고리가 '서적'이 아닌 구매 목록을 찾아서 제품카테고리를 '서적'으로 수정하시오.
-UPDATE BUYS 
-   SET PROD_CATEGORY = '서적'
- WHERE PROD_NAME = '책'
-   AND PROD_CATEGORY != '서적';
+UPDATE buys 
+   SET prod_category = '서적'
+ WHERE prod_name = '책'
+   AND prod_category != '서적';
 
 -- 4. 연락처1이 '011'인 사용자의 연락처1을 '010'으로 수정하시오.
-UPDATE USERS
-   SET USER_MOBILE1 = '010'
- WHERE USER_MOBILE1 = '011';
+UPDATE users
+   SET user_mobile1 = '010'
+ WHERE user_mobile1 = '011';
 
 -- 5. 구매 테이블에서 사용자번호가 5인 사용자의 구매 정보를 삭제하시오.
 -- BUYS 테이블에서 사용자번호(USER_NO)를 이용해서 사용자아이디(USER_ID)를 알아내기
@@ -225,11 +225,3 @@ ALTER TABLE buys ADD CONSTRAINT buys_product_fk FOREIGN KEY(prod_no) REFERENCES 
 ALTER TABLE buys DROP COLUMN prod_name;
 ALTER TABLE buys DROP COLUMN prod_category;
 ALTER TABLE buys DROP COLUMN prod_price;
-
-
-
-
-
-
-
-
