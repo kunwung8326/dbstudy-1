@@ -1,8 +1,10 @@
 package main;
 
+import java.util.List;
 import java.util.Scanner;
 
 import dao.EmployeesDao;
+import dto.EmployeesDto;
 
 public class EmployeesHandler {
 
@@ -29,7 +31,13 @@ public class EmployeesHandler {
 	}
 	// 부서 조회
 	public void inquiryByDepartmentId() {
-		
+		System.out.print("부서(10~110) 입력 >>> ");
+		int departmentId = sc.nextInt();
+		List<EmployeesDto> list = dao.selectEmployeesByDepartmentId(departmentId);
+		System.out.println("총 사원 수: " + list.size());
+		for (EmployeesDto dto : list) {
+			System.out.println(dto);
+		}
 	}
 	
 }
