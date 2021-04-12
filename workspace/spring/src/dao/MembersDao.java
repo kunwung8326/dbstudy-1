@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import dto.MembersDto;
+
 public class MembersDao {
 
 	// field
@@ -48,7 +50,26 @@ public class MembersDao {
 		}
 	}
 	
-	// 가입
+	// 가입(DAO로 전달된 데이터를 DB에 INSERT)
+	// (부가: 같은 아이디, 같은 이메일은 가입을 미리 방지)
+	public int insertMembers(MembersDto dto) {  // dto(mId, mName, mEmail 저장)
+		result = 0;
+		try {
+			con = getConnection();  // 커넥션은 무조건 메소드마다 열고 닫는다.
+			sql = "INSERT INTO MEMBERS(MNO, MID, MNAME, MEMAIL, MDATE) " +
+			      "VALUES (MEMBERS_SEQ.NEXTVAL, ?, ?, ?, SYSDATE)";  // ? 자리에는 변수가 들어간다.
+			ps = con.prepareStatement(sql);
+			ps.setString(1, dto.getmId());  // 1번째 ?에 dto.getmId()를 넣는다.
+			ps.setString(2, dto.getmName());
+			ps.setString(3, dto.getmEmail());
+			result = ps.executeUpdate();  // 실행결과는 실제 삽입된 행(row)의 개수이다.
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+		return result;  // 실행결과 반환
+	}
 	
 	// 탈퇴
 	
