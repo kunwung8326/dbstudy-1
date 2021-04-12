@@ -71,6 +71,28 @@ public class MembersDao {
 		return result;  // 실행결과 반환
 	}
 	
+	// 아이디/이메일 중복검사
+	// mId와 mEmail을 받아서 DB에 존재하면 true반환, 아니면 false반환
+	public boolean doubleCheck(String mId, String mEmail) {
+		boolean result = false;  // join() 가능하다.
+		try {
+			con = getConnection();
+			sql = "SELECT MNO FROM MEMBERS WHERE MID = ? OR MEMAIL = ?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, mId);
+			ps.setString(2, mEmail);
+			rs = ps.executeQuery();
+			if (rs.next()) {  // mId와 mEmail중 일치하는 정보가 이미 DB에 없으면,
+				result = true;  // join() 불가능하다.
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, rs);
+		}
+		return result;
+	}
+	
 	// 탈퇴(mId에 의한 탈퇴)
 	public int deleteMembers(String mId) {
 		result = 0;
@@ -108,9 +130,54 @@ public class MembersDao {
 		return result;
 	}
 	
-	// 아이디 찾기
+	// 아이디 찾기(mEmail을 통해서 mId찾기)
+	public String findmIdBymEmail(String mEmail) {
+		String findmId = null;
+		try {
+			con = getConnection();
+			sql = "SELECT MID FROM MEMBERS WHERE MEMAIL = ?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, mEmail);
+			rs = ps.executeQuery();  // select문은 executeQuery() 메소드, 실행결과는 ResultSet
+			// 일치하는 mEmail 있으면 rs.next()의 결과를 사용
+			// 일치하는 mEmail 없으면 rs.next()의 결과가 false
+			if (rs.next()) {  // 일치하는 mEmail이 있으면,
+				// rs에 저장된 칼럼(열)의 개수 : 1개(select절의 칼럼과 일치)
+				// rs.getString(1) : 1번째 칼럼의 값
+				// rs.getNString("MID") : MID 칼럼의 값
+				findmId = rs.getString(1);  // findmId = rs.getString("MID");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, rs);
+		}
+		return findmId;
+	}
 	
-	// 회원번호에 의한 검색
+	// 아이디에 의한 검색
+	public MembersDto selectMembersDtoBymId(String mId) {
+		MembersDto dto = null;
+		try {
+			con = getConnection();
+			sql = "SELECT MNO, MID, MNAME, MEMAIL, MDATE FROM MEMBERS WHERE MID = ?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, mId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				dto = new MembersDto(rs.getLong(1),
+						             rs.getString(2),
+						             rs.getString(3),
+						             rs.getString(4), 
+						             rs.getDate(5));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, rs);
+		}
+		return dto;
+	}
 	
 	// 전체 검색
 	
