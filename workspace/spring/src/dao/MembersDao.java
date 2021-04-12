@@ -71,9 +71,42 @@ public class MembersDao {
 		return result;  // 실행결과 반환
 	}
 	
-	// 탈퇴
+	// 탈퇴(mId에 의한 탈퇴)
+	public int deleteMembers(String mId) {
+		result = 0;
+		try {
+			con = getConnection();
+			sql = "DELETE FROM MEMBERS WHERE MID = ?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, mId);
+			result = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+		return result;
+	}
 	
-	// 회원정보수정
+	// 회원정보수정(mId에 의한 수정)
+	// 수정 가능한 요소는 mName, mEmail
+	public int updateMembers(MembersDto dto) {
+		result = 0;
+		try {
+			con = getConnection();
+			sql = "UPDATE MEMBERS SET MNAME = ?, MEMAIL = ? WHERE MID = ?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, dto.getmName());
+			ps.setString(2, dto.getmEmail());
+			ps.setString(3, dto.getmId());
+			result = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+		return result;
+	}
 	
 	// 아이디 찾기
 	
