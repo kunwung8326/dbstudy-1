@@ -205,10 +205,3 @@ public class MembersDao {
 	}
 	
 }
-
-
-
-
-
-
-
